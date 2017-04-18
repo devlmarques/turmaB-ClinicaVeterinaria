@@ -18,8 +18,7 @@ namespace Vets.Models {
       public string Raca { get; set; }
 
       // .... outros atributos ficariam aqui
-
-
+      
 
       // criar uma Chave Forasteira - FK
       [ForeignKey("Dono")]
