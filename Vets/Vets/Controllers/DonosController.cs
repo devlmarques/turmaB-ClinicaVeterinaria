@@ -11,8 +11,9 @@ namespace Vets.Controllers {
 
       // GET: Donos
       public ActionResult Index() {
-         return View(db.Donos.ToList().OrderBy(d=>d.Nome)     );
+         return View(db.Donos.ToList().OrderBy(d => d.Nome));
       }
+
 
       // GET: Donos/Details/5
       public ActionResult Details(int? id) {
@@ -72,25 +73,57 @@ namespace Vets.Controllers {
          return View(donos);
       }
 
+
       // GET: Donos/Delete/5
       public ActionResult Delete(int? id) {
+         // avalia se o parâmetro é nulo
          if (id == null) {
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            // redireciona para o início
+            return RedirectToAction("Index");   // new HttpStatusCodeResult(HttpStatusCode.BadRequest);
          }
-         Donos donos = db.Donos.Find(id);
-         if (donos == null) {
-            return HttpNotFound();
+         // pesquisar na BD pelo dono cujo ID é fornecido
+         Donos dono = db.Donos.Find(id);
+         // se o 'dono' não é encontrado...
+         if (dono == null) {
+            // redireciona para o início
+            return RedirectToAction("Index");   // HttpNotFound();
          }
-         return View(donos);
+         // mostra os dados do 'dono'
+         return View(dono);
       }
+
+
+
+
 
       // POST: Donos/Delete/5
       [HttpPost, ActionName("Delete")]
       [ValidateAntiForgeryToken]
       public ActionResult DeleteConfirmed(int id) {
-         Donos donos = db.Donos.Find(id);
-         db.Donos.Remove(donos);
-         db.SaveChanges();
+         // procurar o 'dono', na BD, cuja PK é igual ao 
+         // parâmetro fornecido -id-
+         Donos dono = db.Donos.Find(id);
+
+         try {
+            // remove do objeto 'db', o dono encontrado na 
+            // linha anterior
+            db.Donos.Remove(dono);
+            // torna definitivas as instruções anteriores
+            db.SaveChanges();
+         }
+         catch (System.Exception) {
+            // gerar uma mensagem de erro
+            // a ser entregue ao utilizador
+            ModelState.AddModelError("",
+               string.Format("Ocorreu um erro na operação " +
+                  "de eliminar o 'dono' com ID {0} - {1}", id, dono.Nome)
+            );
+            // regressar à view 'Delete'
+            return View(dono);
+         }
+
+         // devolve o controlo do programa,
+         // apresentando a view 'Index'
          return RedirectToAction("Index");
       }
 
