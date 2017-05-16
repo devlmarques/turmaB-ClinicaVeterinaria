@@ -37,14 +37,36 @@ namespace Vets.Controllers {
       // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
       [HttpPost]
       [ValidateAntiForgeryToken]
-      public ActionResult Create([Bind(Include = "DonoID,Nome,NIF")] Donos donos) {
+      public ActionResult Create([Bind(Include = "Nome,NIF")] Donos dono) {
+
+         // determinar o nº (ID) a atribuir ao novo DONO
+         // criar a var. que recebe esse valor
+         int novoID = 0;
+
+         // determinar o novo ID
+         novoID = (from d in db.Donos
+                   orderby d.DonoID descending
+                   select d.DonoID).FirstOrDefault() + 1;
+         // select d.DonoID
+         // from donos d
+         // order by d.DonoID desc
+         // limit 1
+
+         novoID = db.Donos.Max(d => d.DonoID) + 1;
+         // select max(d.DonoID)
+         // from donos d
+
+         // atribuir o 'novoID' ao objeto 'dono'
+         dono.DonoID = novoID;
+
+
          if (ModelState.IsValid) {
-            db.Donos.Add(donos);
+            db.Donos.Add(dono);
             db.SaveChanges();
             return RedirectToAction("Index");
          }
 
-         return View(donos);
+         return View(dono);
       }
 
       // GET: Donos/Edit/5

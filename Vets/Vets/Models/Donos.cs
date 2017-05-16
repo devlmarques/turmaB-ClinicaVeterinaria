@@ -22,9 +22,13 @@ namespace Vets.Models {
 
       [Required(ErrorMessage ="O {0} é de preencimento obrigatório...")]
       [Display(Name ="Nome do Cliente")]
+      [RegularExpression("[A-Z][a-záéíóúàèìòùãõäëïöüçñ]+((( )|(-)|( (e|de|da|dos) )|( d'))[A-Z][a-záéíóúàèìòùãõäëïöüçñ]+){1,3}",
+         ErrorMessage ="Deve escrever o {0} só com letras. Pode usar um espaço em branco entre palavras. Deve começar cada nome com uma maiúscula, seguida de minúsculas.")]
       public string Nome { set; get; }
 
       [Required(ErrorMessage ="Não se esqueça de preencher o Nº de Contribuinte...")]
+      [RegularExpression("[0-9]{9}", 
+         ErrorMessage ="0 {0} só aceita 9 algarismos.")]
       public string NIF { get; set; }
 
       // especificar que um DONO tem muitos ANIMAIS
